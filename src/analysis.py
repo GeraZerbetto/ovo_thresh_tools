@@ -8,7 +8,8 @@ import math
 def limpiar_reg_lineal(df, columna_x, columna_y, threshold = 0.016):
     '''Devuelve los indices del dataframe del
     porcentaje de puntos que más se aparta de
-    la predicción de la regresión lineal
+    la predicción de la regresión lineal, dado
+    umbral y el dataframe con los puntos descartados
     '''
     ajuste = linear_model.LinearRegression()
     ajuste.fit(df[[columna_x]],df[columna_y])
@@ -19,6 +20,12 @@ def limpiar_reg_lineal(df, columna_x, columna_y, threshold = 0.016):
     
     
 def limpiar_iterativo(df, columna_x, columna_y, iteraciones = 15):
+    '''Devuleve el dataframe limpio y 
+    los indices del dataframe de los
+    puntos que mas se apartan de la prediccion de
+    la regresion lineal. La cantidad de iteraciones 
+    determina la cantidad de puntos que se descartan.
+    '''
     df_limpio = df
     lista_descarte = []
     for _ in range(iteraciones):
@@ -27,7 +34,6 @@ def limpiar_iterativo(df, columna_x, columna_y, iteraciones = 15):
         residuos = (getattr(df_limpio,columna_y)-ajuste.predict(df_limpio[[columna_x]]))**2
         max_resid = residuos.max()
         index_descarte = residuos[residuos == max_resid].index[0]
-        #print(index_descarte)
         lista_descarte.append(index_descarte)
         df_limpio = df_limpio.drop(index_descarte)
     return df_limpio,lista_descarte    
@@ -54,7 +60,6 @@ if __name__ == '__main__':
     vol_molar_parcial = 18
         
     data = df
-#   data = corregir_tiempo(df,'tiempo',1.025)
     ovocitos = data['n_ovocito'].unique()
     condiciones = data['condition'].unique()
     
@@ -107,9 +112,6 @@ if __name__ == '__main__':
 
     y_axis_max = (redondear(df_pendientes.quantile(0.95)['Pf'])) * 1.5
    
-#    if len(sys.argv) > 2:
-#       y_axis_max = float(sys.argv[2])
-
     plt.clf() 
     
     sns.boxplot(x='condition', y = 'Pf', data=df_pendientes, showfliers = False)
