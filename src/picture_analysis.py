@@ -1,3 +1,47 @@
+#%%
+import os
+import cv2 as cv
+
+def read_img(fname):
+    img = cv.imread(fname,0)
+    return img
+
+def process_img(img):
+    img_color = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+    blur = cv.GaussianBlur(img,(5,5),0)
+    ret,thresh = cv.threshold(blur,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
+    contours, hierarchy = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    areas = []
+    for contour in contours:
+        ar = cv.contourArea(contour)
+        areas.append(ar)    
+#    long_cont = max(contours, key = len)
+    max_area = max(areas)
+    max_area_index = areas.index(max_area)
+    long_cont = contours[max_area_index]
+    cv.drawContours(img_color, [long_cont], -1, (0,255,0), 2)
+    return(max_area, img_color)
+    
+os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/20220211')
+root = '.'
+thresh_dir_name = 'thresholded'
+w = os.walk(root)
+#variables = read_vars(filename) #TODO
+root,dirs,files=next(w)
+for directory in dirs:
+    thresh_path = os.path.join(root,directory,thresh_dir_name)
+    file_list = os.listdir(directory)
+    os.mkdir(thresh_path)
+    for file in file_list:
+        if '.pgm' in file:
+            name = file.rsplit('.', 1)[0]
+            fname = os.path.join(root,directory,file)
+            img = read_img(fname)
+            area, img_thresh = process_img(img)
+            cv.imwrite(f'{thresh_path}/{name}.jpg', img_thresh)
+#        write_to_df(img, variables) #TODO
+        
+#%%
 # in a terminal
 # python -m pip install --user opencv-contrib-python numpy scipy matplotlib ipython jupyter pandas sympy nose
 
@@ -13,10 +57,11 @@ import matplotlib.pyplot as plt
 
 
 
-img_fname = './9/NI-7.0-04.pgm'
+img_fname = './1/NI-7.0-04.pgm'
 img = cv.imread(img_fname,0)
+
 img_color = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
-#ret,th1 = cv.threshold(img,125,255,cv.THRESH_BINARY_INV)
+ret,th1 = cv.threshold(img,125,255,cv.THRESH_BINARY_INV)
 
 blur = cv.GaussianBlur(img,(5,5),0)
 ret4,thresh = cv.threshold(blur,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
@@ -35,19 +80,6 @@ cv.drawContours(img_color, [long_cont], -1, (0,255,0), 3)
 
 plt.imshow(img_color)
 plt.show()
-#%%´
-import os
-
-w = os.walk('./')
-variables = read_vars(filename) #TODO
-root,dirs,files=next(w)
-for dir in dirs:
-    file_list = os.listdir(dir)
-    for file in file_list:
-        img = leer_foto(file) #TODO
-        area, img_thresh = process_img(img) #TODO
-        write_to_df(img, variables) #TODO
-
 #%%
 
 # using cam built-in to computer
