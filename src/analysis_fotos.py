@@ -19,7 +19,7 @@ def limpiar_reg_lineal(df, columna_x, columna_y, threshold = 0.016):
     return df_limpio,index_descarte
     
     
-def limpiar_iterativo(df, columna_x, columna_y, iteraciones = 15):
+def limpiar_iterativo(df, columna_x, columna_y, iteraciones = 0):
     '''Devuleve el dataframe limpio y 
     los indices del dataframe de los
     puntos que mas se apartan de la prediccion de
@@ -92,11 +92,11 @@ if __name__ == '__main__':
         ovo_indexes = data.index[data['n_ovocito']] == ovocito
         ovo_filter = data['n_ovocito'] == ovocito
         df = data[ovo_filter]
-        df, descarte = limpiar_iterativo(df,'tiempo','ratio')
-        data = data.drop(descarte)
-        #df, descarte = limpiar_reg_lineal(df,'tiempo','ratio')
+#        df, descarte = limpiar_iterativo(df,'tiempo','ratio')
+#        data = data.drop(descarte)
+        df, descarte = limpiar_reg_lineal(df,'tiempo','ratio')
         #print(descarte)
-        #data = data.drop(descarte)
+        data = data.drop(descarte)
         pendiente = regresion_lineal(df,'tiempo','ratio')
         lista_pendientes.append(pendiente)
     

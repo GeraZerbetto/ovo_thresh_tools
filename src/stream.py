@@ -138,8 +138,7 @@ def select_variables(all_vars):
     xp_variables = [all_vars[int(i)] for i in xp_variables]
     xp_parameters = [parameter for parameter in all_vars if parameter not in xp_variables]
     with open('variables.csv','a') as file:
-        write = csv.writer(file)
-        write.writerows((xp_variables,))
+        print(xp_variables, file = file)
     return (xp_variables, xp_parameters)
     
 def set_timings():
@@ -150,7 +149,7 @@ def set_timings():
     
     
 
-		
+os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/prueba')		
 vs = WebcamVideoStream(src=0).start()
 while vs.max_area == 0.0:
     pass
@@ -170,10 +169,15 @@ all_variables_types = {
 record = Record()
 xp_vars, xp_parms = select_variables(all_variables)
 set_record_attr(record, xp_parms, all_variables_types)
-
+parms_dict = {parameter: getattr(record, parameter) for parameter in xp_parms}
+with open('variables.csv','a') as file:
+    print(parms_dict, file = file)
 
 total_time, snapshot_window, area_window = set_timings()
 record.n_ovocito = int(input('Número de ovocito inicial: '))
+
+preguntar_n_rana() #TODO agregar atributo a objeto record
+preguntar_temp() #TODO agregar atributo a objeto record
 
 print(record.row)
 print('-'*40)
@@ -212,7 +216,8 @@ while program_started:
         now = datetime.datetime.now().timestamp()
         record.tiempo = (now-initial_time_record)
         area_time_window_passed =  record.tiempo > (n_record * area_window)
-        
+        calcular_circularida() #TODO
+        print_n_ovocito() #TODO
           
         if area_time_window_passed:
             n_record += 1
