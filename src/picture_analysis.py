@@ -29,7 +29,7 @@ def read_vars(fname):
         return (variables, parms)
 
 
-os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/20220211')
+#os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/20220211')
 root = '.'
 thresh_dir_name = 'thresholded'
 vars_fname = 'variables.csv'
@@ -43,7 +43,7 @@ for directory in dirs:
     os.mkdir(thresh_path)
     for file in file_list:
         if '.pgm' in file:
-            calcular_circularidad_perimetro() #TODO
+            #calcular_circularidad_perimetro() #TODO
             name = file.rsplit('.', 1)[0]
             fname = os.path.join(root,directory,file)
             img = read_img(fname)

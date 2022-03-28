@@ -101,7 +101,8 @@ if __name__ == '__main__':
         lista_pendientes.append(pendiente)
     
     df_pendientes['pendiente'] = lista_pendientes
-    df_pendientes['Pf'] = df_pendientes['pendiente'] * df_pendientes['factor_osmolaridad']    
+    df_pendientes['Pf'] = df_pendientes['pendiente'] * df_pendientes['factor_osmolaridad'] 
+    df_pendientes.to_csv('pendientes.csv')    
     df_pendientes = df_pendientes[df_pendientes['Pf'] > 0.0 ] 
     df_pendientes = df_pendientes[df_pendientes['Pf'] < 500.0]
     
