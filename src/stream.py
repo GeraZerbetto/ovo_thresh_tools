@@ -194,8 +194,8 @@ while program_started:
           
     if program_started and not run_record:
         print(f'Condición actual: {condition}')
-        ask_set_vars = int(input('¿Querés asignar nueva condición o salir?\n0 - No\n1 - Si\n'))
-        if ask_set_vars:
+        ask_set_vars = input('¿Querés asignar nueva condición o salir?\nENTER - No\nCualquier tecla seguida de ENTER - Si\n')
+        if bool(ask_set_vars):
             set_record_attr(record, xp_vars, all_variables_types)          
             condition = '-'.join([str(getattr(record,var)) for var in xp_vars])
         os.mkdir(f'./{record.n_ovocito}')
