@@ -175,6 +175,12 @@ set_record_attr(record, xp_parms, all_variables_types)
 total_time, snapshot_window, area_window = set_timings()
 record.n_ovocito = int(input('Número de ovocito inicial: '))
 
+<<<<<<< Updated upstream
+=======
+#preguntar_n_rana() #TODO agregar atributo a objeto record
+#preguntar_temp() #TODO agregar atributo a objeto record
+
+>>>>>>> Stashed changes
 print(record.row)
 print('-'*40)
 print('\n'*5)
@@ -190,8 +196,8 @@ while program_started:
           
     if program_started and not run_record:
         print(f'Condición actual: {condition}')
-        ask_set_vars = int(input('¿Querés asignar nueva condición o salir?\n0 - No\n1 - Si\n'))
-        if ask_set_vars:
+        ask_set_vars = input('¿Querés asignar nueva condición o salir?\nENTER - No\nCualquier tecla seguida de ENTER - Si\n')
+        if bool(ask_set_vars):
             set_record_attr(record, xp_vars, all_variables_types)          
             condition = '-'.join([str(getattr(record,var)) for var in xp_vars])
         os.mkdir(f'./{record.n_ovocito}')
@@ -212,7 +218,12 @@ while program_started:
         now = datetime.datetime.now().timestamp()
         record.tiempo = (now-initial_time_record)
         area_time_window_passed =  record.tiempo > (n_record * area_window)
+<<<<<<< Updated upstream
         
+=======
+#        calcular_circularida() #TODO
+#        print_n_ovocito() #TODO
+>>>>>>> Stashed changes
           
         if area_time_window_passed:
             n_record += 1
