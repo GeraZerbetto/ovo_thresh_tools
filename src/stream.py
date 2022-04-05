@@ -149,7 +149,7 @@ def set_timings():
     
     
 
-os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/prueba')		
+#os.chdir('/mnt/storage/home/geraz/experimentos_ovocitos/prueba')		
 vs = WebcamVideoStream(src=0).start()
 while vs.max_area == 0.0:
     pass
@@ -176,8 +176,8 @@ with open('variables.csv','a') as file:
 total_time, snapshot_window, area_window = set_timings()
 record.n_ovocito = int(input('Número de ovocito inicial: '))
 
-preguntar_n_rana() #TODO agregar atributo a objeto record
-preguntar_temp() #TODO agregar atributo a objeto record
+#preguntar_n_rana() #TODO agregar atributo a objeto record
+#preguntar_temp() #TODO agregar atributo a objeto record
 
 print(record.row)
 print('-'*40)
@@ -216,8 +216,8 @@ while program_started:
         now = datetime.datetime.now().timestamp()
         record.tiempo = (now-initial_time_record)
         area_time_window_passed =  record.tiempo > (n_record * area_window)
-        calcular_circularida() #TODO
-        print_n_ovocito() #TODO
+#        calcular_circularida() #TODO
+#        print_n_ovocito() #TODO
           
         if area_time_window_passed:
             n_record += 1
