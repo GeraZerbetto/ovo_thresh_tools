@@ -110,6 +110,7 @@ if __name__ == '__main__':
     media_pf_ni = ni_pendientes['Pf'].mean()
     sd_pf_ni = ni_pendientes['Pf'].std()
     df_filtered_pendientes = df_pendientes[df_pendientes['Pf'] > media_pf_ni - 2*sd_pf_ni]
+    df_filtered_pendientes.to_csv('pendientes_filtradas.csv')
 
     y_axis_max = (redondear(df_pendientes.quantile(0.95)['Pf'])) * 1.5
    
