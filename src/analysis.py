@@ -84,7 +84,6 @@ if __name__ == '__main__':
         g.map(sns.regplot, 'tiempo', 'ratio')
         g.set(ylim=(None ,None))
         plt.savefig(f'raw_{condicion}.pdf')
-        plt.close('all')
 
     
     for ovocito in ovocitos:
@@ -114,22 +113,28 @@ if __name__ == '__main__':
 
     y_axis_max = (redondear(df_pendientes.quantile(0.95)['Pf'])) * 1.5
    
-    plt.clf() 
-    
-    sns.boxplot(x='condition', y = 'Pf', data=df_pendientes, showfliers = False)
-    sns.swarmplot(x='condition', y = 'Pf', data=df_pendientes, color = '0.25')
-    plt.ylim(None, y_axis_max)
-    plt.xticks(rotation=45)
-    plt.savefig('raw_boxplot.pdf', bbox_inches = "tight")
-    
-    plt.clf() 
-      
-    sns.boxplot(x='condition', y = 'Pf', data=df_filtered_pendientes, showfliers = False)
-    sns.swarmplot(x='condition', y = 'Pf', data=df_filtered_pendientes, color = '0.25')
-    plt.ylim(None, y_axis_max)
-    plt.xticks(rotation=45)
-    plt.savefig('filtered_boxplot.pdf', bbox_inches = "tight")    
+    fig,ax = plt.subplots(1, 1, figsize=(7.5, 9.5))
+    sns.boxplot(x='condition', y = 'Pf', data=df_pendientes, showfliers = False,ax=ax)
+    sns.swarmplot(x='condition', y = 'Pf', data=df_pendientes, color = '0.25',ax=ax)
+    ax.set_ylim(None, y_axis_max)
+    ax.set_xticklabels(ax.get_xticklabels(),rotation=30, ha='right')
+    fig.savefig('raw_boxplot.pdf', bbox_inches = "tight")
 
+
+    fig,ax = plt.subplots(1, 1, figsize=(7.5, 9.5))
+    sns.boxplot(x='condition', y = 'Pf', data=df_filtered_pendientes, showfliers = False, ax=ax)
+    sns.swarmplot(x='condition', y = 'Pf', data=df_filtered_pendientes, color = '0.25', ax=ax)
+    ax.set_ylim(None, y_axis_max)
+    ax.set_xticklabels(ax.get_xticklabels(),rotation=30, ha='right')
+    fig.savefig('filtered_boxplot.pdf', bbox_inches = "tight")   
+
+    '''fig,ax = plt.subplots()
+    sns.boxplot(x='condition', y = 'Pf', data=df_pendientes, showfliers = False,ax=ax)
+    sns.swarmplot(x='condition', y = 'Pf', data=df_pendientes, color = '0.25',ax=ax)
+    plt.ylim(None, y_axis_max)
+    plt.xticks(rotation=45)
+    plt.savefig('raw_boxplot.pdf', bbox_inches = "tight")'''
+        
 
     for condicion in condiciones:
         df = data[data['condition'] == condicion]
@@ -137,4 +142,4 @@ if __name__ == '__main__':
         g.map(sns.regplot, 'tiempo', 'ratio')
         g.set(ylim=(None ,None))
         plt.savefig(f'filtered_{condicion}.pdf')
-        plt.close('all')    
+        plt.close('all') 
