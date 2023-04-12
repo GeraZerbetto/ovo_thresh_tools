@@ -48,6 +48,16 @@ def corregir_tiempo(df,columna,factor):
     return df
 def redondear(x, base=10):
     return base * round(x/base)
+
+def graphpad_csv(pendientes, savefile):
+    ''' Transforma el archivo de pendientes en un archivo csv cargable directo en GraphPad'''
+    data = pd.read_csv(pendientes, usecols=[2, 7]) #Columnas condicion y Pf
+    data_pivot = data.pivot(index=None, columns='condition', values='Pf')
+    data_pivot = data_pivot.apply(lambda col: sorted(col, key=pd.isna), axis=0, result_type='broadcast')
+    data_pivot = data_pivot.dropna(how='all')
+    data_pivot.to_csv(savefile, index=False)
+
+
     
 if __name__ == '__main__':
     
@@ -75,7 +85,9 @@ if __name__ == '__main__':
         ovo_filter = data['n_ovocito'] == ovocito
         data.loc[ovo_indexes,'ratio'] = (data[ovo_filter]['area']/data[ovo_filter].iloc[0]['area'])**1.5
 
-    df_pendientes = data[data['tiempo'] == 0.0][['n_ovocito','condition', 'factor_osmolaridad', 'gen1', 'pH_interno']]
+    # evita error si no hay datos para el tiempo 0
+    #df_pendientes = data[data['tiempo'] == 0.0][['n_ovocito','condition', 'factor_osmolaridad', 'gen1', 'pH_interno']]
+    df_pendientes = data.groupby('n_ovocito', as_index=False, sort=False).nth(0)[['n_ovocito','condition', 'factor_osmolaridad', 'gen1', 'pH_interno']]
     lista_pendientes = []
     
     for condicion in condiciones:
@@ -97,7 +109,13 @@ if __name__ == '__main__':
         #print(descarte)
         #data = data.drop(descarte)
         pendiente = regresion_lineal(df,'tiempo','ratio')
-        lista_pendientes.append(pendiente)
+        
+        ###debug###
+        if pendiente:
+            lista_pendientes.append(pendiente)
+        else:
+            lista_pendientes.append("NaN")
+        ###debug##
     
     df_pendientes['pendiente'] = lista_pendientes
     df_pendientes['Pf'] = df_pendientes['pendiente'] * df_pendientes['factor_osmolaridad']
@@ -105,11 +123,14 @@ if __name__ == '__main__':
     df_pendientes = df_pendientes[df_pendientes['Pf'] > 0.0 ] 
     df_pendientes = df_pendientes[df_pendientes['Pf'] < 500.0]
     
+    graphpad_csv(df_pendientes, 'pendientes_graphpad.csv')
+    
     ni_pendientes = df_pendientes[df_pendientes['condition'] == nombre_ni]
     media_pf_ni = ni_pendientes['Pf'].mean()
     sd_pf_ni = ni_pendientes['Pf'].std()
     df_filtered_pendientes = df_pendientes[df_pendientes['Pf'] > media_pf_ni - 2*sd_pf_ni]
     df_filtered_pendientes.to_csv('pendientes_filtradas.csv')
+
 
     y_axis_max = (redondear(df_pendientes.quantile(0.95)['Pf'])) * 1.5
    
